@@ -36,6 +36,7 @@ function displaySignupMessage(response) {
 //User Login
 userLogin = document.querySelector("#user-login")
 playButton = document.querySelector("#play-button")
+colorChoiceForm = document.querySelector("#color-choice-form")
 
 userLogin.addEventListener("submit", event => {
     event.preventDefault()
@@ -72,7 +73,12 @@ function displayLoginMessage(user) {
     if (localStorage.getItem("token")) {
         signup_message.textContent = ''
         login_message.textContent = `Lets get it, ${user.username}!`
-        playButton.style.display = "block"
+        
+        //reveal the deal cards button
+        playButton.style.opacity = 1
+
+        //hide background color form after logout
+        colorChoiceForm.style.opacity = 1
     } else {
         signup_message.textContent = 'Maybe you should sign up'
         login_message.textContent = 'Ah, not this time sport...'  
@@ -81,10 +87,32 @@ function displayLoginMessage(user) {
 
 //User Logout
 const logOutButton = document.querySelector("#user-logout")
+const documentBody = document.querySelector("body")
 
 logOutButton.addEventListener("click", event => {
     localStorage.removeItem("token")
     signup_message.textContent = ''
     login_message.textContent = ''
+
+    //hide play button after logout
+    playButton.style.opacity = 0
+
+    //hide background color form after logout
+    colorChoiceForm.style.opacity = 0
+})
+
+//change the background
+const backgroundColorForm = document.querySelector("#color-choice-form")
+console.log(backgroundColorForm)
+
+backgroundColorForm.addEventListener('submit', event => {
+    event.preventDefault()
+    
+    const formData = new FormData(event.target)
+    const color = formData.get("background-color")
+
+    console.log(color)
+
+    documentBody.style["backgroundColor"] = color
 })
 
