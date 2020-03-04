@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css?family=Fredoka+One&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Fredoka+One|Permanent+Marker&display=swap');
+
+* {
+    background-color: green;
+}
+
+header {
+    height: 10rem;
+}
+
+#nav-card-container{
+    display:flex;
+    justify-content:center;
+}
+
+#nav-card{
+    display:flex;
+    flex-direction: column;
+    font-size: large;
+    height: 20rem;
+    width: 40%;
+    border-style: solid;
+    border-color: black;
+    border-radius: 10%;
+    background-color: lawngreen;
+    list-style: none;
+}
+
+#nav-card h2{
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 0px;
+    background-color: lawngreen;
+    font-family: 'Fredoka One', cursive;
+}
+
+#nav-card p{
+    text-align: center;
+    background-color: lawngreen;
+    font-family: 'Permanent Marker', cursive;
+}
+
+#nav-bar{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    list-style: none;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    background-color: lawngreen;
+}
+
+#nav-bar div{
+    background-color: lawngreen;
+}
+
+#new-user-form{
+    background-color: lawngreen;
+}
+
+.form-title{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-right: 10px;
+    text-align: center;
+    background-color: lawngreen;
+    font-family: 'Fredoka One', cursive;
+}
+
+.form-field{
+    background-color: white;
+}
+
