@@ -18,7 +18,7 @@
                     <form id="new-user-signup">
                         <input type="text" name="username" placeholder="username" class="form-field">
                         <input type="password" name="password" placeholder="password" class="form-field">
-                        <input type="submit" id="new-user-signup-submit" class="form-field">
+                        <input type="submit" value="Sign Up" id="new-user-signup-submit" class="form-field">
                     </form>
                     <p id="signup-message" class="message"></p>
                 </div>
@@ -27,14 +27,32 @@
                     <form id="user-login">
                         <input type="text" name="username" placeholder="username" class="form-field">
                         <input type="password" name="password" placeholder="password" class="form-field">
-                        <input type="submit" id="user-login-submit" class="form-field">
+                        <input type="submit" value="Login" id="user-login-submit" class="form-field">
                     </form>
                     <p id="login-message" class="message"></p>
                 </div>
                 <button id="user-logout">Log Out</button>
             </section>
         </nav>
-        <section id="play-button-container">
+        <section id="user-actions-container">
+            <form id="color-choice-form">
+                <p id="color-choice-label">Select Background Color:</p>
+                <div class="color-choice">
+                    <input type="radio" id="green-background-choice" name="background-color" value="green" checked>
+                    <label for="green-background-choice">Green</label>
+                </div>
+                <div class="color-choice">
+                    <input type="radio" id="blue-background-choice" name="background-color" value="blue" checked>
+                    <label for="blue-background-choice">Blue</label>
+                </div>
+                <div class="color-choice">
+                    <input type="radio" id="red-background-choice" name="background-color" value="red" checked>
+                    <label for="red-background-choice">Red</label>
+                </div>
+                <div id="color-choice-submit">
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
             <button id="play-button">DEAL EM</button>
         </section>
     </main>
