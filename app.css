@@ -6,7 +6,7 @@
 }
 
 header {
-    height: 10rem;
+    height: 0rem;
 }
 
 #nav-card-container{
@@ -16,21 +16,24 @@ header {
 
 #nav-card{
     display:flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
     font-size: large;
-    height: 20rem;
-    width: 40%;
+    height: 10rem;
+    width: 90%;
     border-style: solid;
     border-color: black;
-    border-radius: 10%;
+    border-radius: 20%;
     background-color: lawngreen;
     list-style: none;
 }
 
 #nav-card h2{
     text-align: center;
-    margin-top: 40px;
+    margin-top: 20px;
     margin-bottom: 0px;
+    height: 5rem;
     background-color: lawngreen;
     font-family: 'Fredoka One', cursive;
 }
@@ -55,8 +58,21 @@ header {
     background-color: lawngreen;
 }
 
-#new-user-form{
+#new-user-signup{
     background-color: lawngreen;
+}
+
+.message{
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#user-login{
+    background-color: lawngreen;
+}
+
+#user-logout{
+    background-color: white;
 }
 
 .form-title{
@@ -72,3 +88,16 @@ header {
     background-color: white;
 }
 
+#play-button-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-top: 10px;
+}
+
+#play-button{
+    font-size: 24px;
+    font-family: 'Fredoka One', cursive;
+    background-color: lawngreen;
+    display: none
+}
