@@ -60,6 +60,8 @@ userLogin.addEventListener("submit", event => {
     .then(parseJSON)
     .then(storeToken)
     .then(() => displayLoginMessage(user))
+    
+    clearHands()
 })
 
 function parseJSON(response) {
@@ -90,6 +92,8 @@ function displayLoginMessage(user) {
     } 
 }
 
+
+
 //User Logout
 const documentBody = document.querySelector("body")
 const handsContainer = document.querySelector("#hands-section")
@@ -108,8 +112,7 @@ logOutButton.addEventListener("click", event => {
     handsContainer.style.display = "none"
 
     //reset cards
-    while (playersHand.hasChildNodes()) {playersHand.removeChild(playersHand.firstChild)}
-    while (dealersHand.hasChildNodes()) {dealersHand.removeChild(dealersHand.firstChild)}
+    clearHands()
     
     //display new user signup
     userSignUp.style.display = "block"
@@ -130,9 +133,12 @@ backgroundColorForm.addEventListener("submit", event => {
 
 //deal player's hand
 const playersHandContainer = document.querySelector("#players-hand-container")
+const playersHandDescription = document.querySelector("#players-hand-description")
 const deckURL = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1"
 let deckId
 let playersHandValues = []
+let dealersHandValues = []
+let handInfo
 
 //get deck id
 fetch(deckURL)
@@ -141,9 +147,10 @@ fetch(deckURL)
 
 playButton.addEventListener("click", event => {
     event.preventDefault()
+    clearHands()
     
     //hide play button
-    playButton.style.display = "none"
+    // playButton.style.display = "none"
 
     //display hands container
     handsContainer.style.display = "flex"
@@ -157,7 +164,18 @@ playButton.addEventListener("click", event => {
     fetch(handURL)
         .then(parseJSON)
         .then(response => response.cards.map(appendCard))
+        .then(() => {
+            handInfo = appendHandDescription(playersHandValues)   
+        })
 })
+
+function clearHands() {
+    while (playersHand.hasChildNodes()) {playersHand.removeChild(playersHand.firstChild)}
+    playersHandValues = [];
+
+    while (dealersHand.hasChildNodes()) {dealersHand.removeChild(dealersHand.firstChild)}
+    dealersHandValues = [];
+}
 
 function appendCard(card) {
     let cardImg = document.createElement("img")
@@ -167,7 +185,35 @@ function appendCard(card) {
     playersHandValues.push(card.code)
 }
 
-//determine the value of hand
+function appendHandDescription(hand) {
+    let type, value, other  
+
+    if(isPair(hand)) {
+        [type, value, other] = handValue(hand)
+        playersHandDescription.textContent =`Pair of ${handValueToType(value)} !`
+        return [type, value, other]
+    } else if(isStraightFlush(hand)) {
+        [type, value] = handValue(hand)
+        playersHandDescription.textContent =`WOO HOO STRAIGHT FLUSH ${handValueToType(value)} HIGH !!!!`
+        return [type, value]
+    } else if(isStraight(hand)) {
+        [type, value] = handValue(hand)
+        playersHandDescription.textContent =`WOO ${handValueToType(value)} HIGH STRAIGHT !!`
+        return [type, value]
+    } else if(isFlush(hand)) {
+        [type, value] = handValue(hand)
+        playersHandDescription.textContent =`WOO ${handValueToType(value)} HIGH FLUSH !!`
+        return [type, value]
+    } else if(isThreeOfKind(hand)) {
+        [type, value] = handValue(hand)
+        playersHandDescription.textContent =`WOO SET OF ${handValueToType(value)}s !!!`
+        return [type, value]
+    } else {
+        [type, value] = handValue(hand)
+        playersHandDescription.textContent =`AH ${handValueToType(value)} HIGH...`
+        return [type, value]
+    }
+}
 
 function handValue(hand) {
     let handType, pairValue, otherValue
@@ -185,6 +231,8 @@ function handValue(hand) {
         handType = 'Flush';
     } else if(isThreeOfKind(hand)) {
         handType = 'Three Of a Kind';
+    } else {
+        handType = 'No Pair'
     }
 
     return [handType, highCard]    
@@ -215,6 +263,23 @@ function sortedHandValues(hand) {
     })
 
     return values.sort((a,b) => a - b)
+}
+
+function handValueToType(value) {
+    switch(value) {
+        case 10:
+            return '10'
+        case 11:
+            return 'J'
+        case 12:
+            return 'Q'
+        case 13:
+            return 'K'
+        case 14:
+            return 'A'
+        default:
+            return value.toString()
+    }
 }
 
 function isStraight(hand) {
