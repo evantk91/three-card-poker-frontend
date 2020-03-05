@@ -143,16 +143,17 @@ label{
     background-color: white;
 }
 
-#play-button{
-    display: none;
+#deal-button{
+    display: flex;
     font-size: 24px;
     height: 50%;
     padding: 20px 20px 20px 20px;
     font-family: 'Fredoka One', cursive;
+    color: white;
     border-style: solid;
     border-color: black;
     border-radius: 20%;
-    background-color: lawngreen;
+    background-color: black;
 }
 
 #hands-section{
@@ -189,5 +190,49 @@ label{
 .hand{
     display: flex;
     justify-content: center;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
+}
+
+.hand-description{
+    margin-top: 0px;
+}
+
+#user-options-section{
+    display: flex;
+    justify-content:center;
+    margin-top: 20px;
+}
+
+#user-options-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 40%;
+    margin-top: 20px 0 20px 0;
+    font-family: 'Fredoka One', cursive;
+    border-style: solid;
+    border-color: black;
+    border-radius: 20%;
+    background-color: lawngreen;
+}
+
+#bets-display-container{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+#purse{
+    color: red;
+}
+
+#button-container{
+    margin: 10px 0 10px 0;
+}
+
+#bets-submit{
+    color: white;
+    background-color: black;
 }

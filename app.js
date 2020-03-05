@@ -37,8 +37,9 @@ function displaySignupMessage(response) {
 const userLogin = document.querySelector("#user-login")
 const userLoginButton = document.querySelector("#user-login-submit")
 const logOutButton = document.querySelector("#user-logout")
-const playButton = document.querySelector("#play-button")
+const dealButton = document.querySelector("#deal-button")
 const colorChoiceForm = document.querySelector("#color-choice-form")
+const userOptionsSection = document.querySelector("#user-options-section")
 
 userLogin.addEventListener("submit", event => {
     event.preventDefault()
@@ -79,9 +80,9 @@ function displayLoginMessage(user) {
         login_message.textContent = `Lets get it, ${user.username}!`
 
         //display logout button and deal cards button
-        logOutButton.style.display = "block";
-        playButton.style.display = "block";
+        logOutButton.style.display = "block"
         colorChoiceForm.style.display = "flex"
+        userOptionsSection.style.display = "flex"
 
         //hide new user signup and login button
         userSignUp.style.display = "none"
@@ -106,10 +107,10 @@ logOutButton.addEventListener("click", event => {
     login_message.textContent = ''
 
     //hide play button, background selector, hide logout button, and cards after logout
-    playButton.style.display = "none"
     colorChoiceForm.style.display = "none" 
     logOutButton.style.display = "none"
     handsContainer.style.display = "none"
+    dealButton.style.display = "block"
 
     //reset cards
     clearHands()
@@ -145,12 +146,12 @@ fetch(deckURL)
     .then(parseJSON)
     .then(deck => {deckId = deck.deck_id})
 
-playButton.addEventListener("click", event => {
+dealButton.addEventListener("click", event => {
     event.preventDefault()
     clearHands()
     
     //hide play button
-    // playButton.style.display = "none"
+    dealButton.style.display = "none"
 
     //display hands container
     handsContainer.style.display = "flex"

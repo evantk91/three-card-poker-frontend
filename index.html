@@ -53,7 +53,6 @@
                     <button type="submit">Submit</button>
                 </div>
             </form>
-            <button id="play-button">DEAL EM</button>
         </section>
         <section id="hands-section">
             <section id="hands-container">
@@ -67,6 +66,28 @@
                     <div class="hand" id="players-hand"></div>
                     <p class="hand-description" id="players-hand-description"></p>
                 </section>
+            </section>
+        </section>
+        <section id="user-options-section">
+            <section id="user-options-container">
+                <div id="purse-container">
+                    <h1 id="purse">Purse:</h1>
+                </div>
+                <div id="bets-display-container">
+                    <h1 id="pair-plus">Pair Plus: <span></span></h1>
+                    <h1 id="ante">Ante: <span></span></h1>
+                </div>
+
+                <div id="bets-container">
+                    <form id="bets-form">
+                        <input type="number" name="pairPlus" placeholder="pair plus" class="form-field">
+                        <input type="number" name="ante" placeholder="ante" class="form-field">
+                        <input type="submit" value="BET" id="bets-submit" class="form-field">  
+                    </form>
+                </div>
+                <div id="button-container">
+                    <button id="deal-button">DEAL EM</button>
+                </div>
             </section>
         </section>
     </main>
