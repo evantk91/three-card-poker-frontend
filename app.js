@@ -63,6 +63,8 @@ userLogin.addEventListener("submit", event => {
     .then(() => displayLoginMessage(user))
     
     clearHands()
+    purse = 1000
+    userOptionsSection.style.display = "none"
 })
 
 function parseJSON(response) {
@@ -109,9 +111,7 @@ logOutButton.addEventListener("click", event => {
     logOutButton.style.display = "none"
     handsContainer.style.display = "none"
     userOptionsSection.style.display = "none"
-
-    //reset cards
-    clearHands()
+    resultsSection.style.display = "none"
     
     //display new user signup
     userSignUp.style.display = "block"
@@ -142,7 +142,7 @@ const purseValue = document.querySelector('#purse span')
 const pairPlusValue = document.querySelector('#pair-plus span')
 const anteValue = document.querySelector('#ante span')
 
-let purse = 1000;
+let purse = 1000
 purseValue.textContent = purse;
 
 betsForm.addEventListener('submit', event => {
@@ -165,7 +165,6 @@ betsForm.addEventListener('submit', event => {
     betsForm.style.display = 'none'
 })
 
-//deal player's hand
 const playersHandContainer = document.querySelector("#players-hand-container")
 const playersHandDescription = document.querySelector("#players-hand-description")
 
@@ -181,9 +180,9 @@ fetch(deckURL)
     .then(parseJSON)
     .then(deck => {deckId = deck.deck_id})
 
+//deal player's hand
 dealButton.addEventListener("click", event => {
     event.preventDefault()
-    clearHands()
     
     dealButton.style.display = "none"
     quitButton.style.display = "none"
@@ -201,9 +200,9 @@ dealButton.addEventListener("click", event => {
 
     fetch(handURL)
         .then(parseJSON)
-        .then(response => response.cards.map(appendCard))
+        .then(response => response.cards.map(appendPlayersCard))
         .then(() => {
-            handInfo = appendHandDescription(playersHandValues)   
+            appendPlayersHandDescription(playersHandValues)   
         })
         .then(() => {
             purse = purse + pairPlusPayout(pairPlusValue.textContent, playersHandValues)
@@ -235,7 +234,7 @@ function clearHands() {
     dealersHandValues = [];
 }
 
-function appendCard(card) {
+function appendPlayersCard(card) {
     let cardImg = document.createElement("img")
     cardImg.src = card.image
     playersHand.appendChild(cardImg)
@@ -243,33 +242,21 @@ function appendCard(card) {
     playersHandValues.push(card.code)
 }
 
-function appendHandDescription(hand) {
-    let type, value, other  
+function appendPlayersHandDescription(hand) {
+    let value = handValue(hand)[1]
 
     if(isPair(hand)) {
-        [type, value, other] = handValue(hand)
-        playersHandDescription.textContent =`Pair of ${handValueToType(value)}. You win ${pairPlusPayout(pairPlusValue.textContent, hand)} !`
-        return [type, value, other]
+        playersHandDescription.textContent =`Pair of ${handValueToType(value)}. You win ${pairPlusPayout(pairPlusValue.textContent, hand)} !`;
     } else if(isStraightFlush(hand)) {
-        [type, value] = handValue(hand)
-        playersHandDescription.textContent =`WOO HOO STRAIGHT FLUSH ${handValueToType(value)} HIGH, WIN ${pairPlusPayout(pairPlusValue.textContent, hand)}!!!!`
-        return [type, value]
+        playersHandDescription.textContent =`WOO HOO STRAIGHT FLUSH ${handValueToType(value)} HIGH, WIN ${pairPlusPayout(pairPlusValue.textContent, hand)}!!!!`;
     } else if(isStraight(hand)) {
-        [type, value] = handValue(hand)
-        playersHandDescription.textContent =`WOO ${handValueToType(value)} HIGH STRAIGHT, WIN ${pairPlusPayout(pairPlusValue.textContent, hand)} !!`
-        return [type, value]
+        playersHandDescription.textContent =`WOO ${handValueToType(value)} HIGH STRAIGHT, WIN ${pairPlusPayout(pairPlusValue.textContent, hand)} !!`;
     } else if(isFlush(hand)) {
-        [type, value] = handValue(hand)
-        playersHandDescription.textContent =`WOO ${handValueToType(value)} HIGH FLUSH, WIN ${pairPlusPayout(pairPlusValue.textContent, hand)} !!`
-        return [type, value]
+        playersHandDescription.textContent =`WOO ${handValueToType(value)} HIGH FLUSH, WIN ${pairPlusPayout(pairPlusValue.textContent, hand)} !!`;
     } else if(isThreeOfKind(hand)) {
-        [type, value] = handValue(hand)
-        playersHandDescription.textContent =`WOO SET OF ${handValueToType(value)}s, WIN ${pairPlusPayout(pairPlusValue.textContent, hand)}!!!`
-        return [type, value]
+        playersHandDescription.textContent =`WOO SET OF ${handValueToType(value)}s, WIN ${pairPlusPayout(pairPlusValue.textContent, hand)}!!!`;
     } else {
-        [type, value] = handValue(hand)
-        playersHandDescription.textContent =`Ahh ${handValueToType(value)} high...`
-        return [type, value]
+        playersHandDescription.textContent =`Ahh ${handValueToType(value)} high...`;
     }
 }
 
@@ -284,7 +271,7 @@ function handValue(hand) {
     } else if(isStraightFlush(hand)) {
         handType = 'Straight Flush';
     } else if(isStraight(hand)) {
-        handType = 'Straignt';
+        handType = 'Straight';
     } else if(isFlush(hand)) {
         handType = 'Flush';
     } else if(isThreeOfKind(hand)) {
@@ -381,7 +368,6 @@ function pairInfo(hand) {
 
 function pairPlusPayout(bet, hand) {
     let handType = handValue(hand)[0]
-    console.log(handType)
 
     switch(handType) {
         case 'Pair':
@@ -395,7 +381,111 @@ function pairPlusPayout(bet, hand) {
         case 'Straight Flush':
             return 41 * bet;
         default:
-            console.log('sup')
             return 0;
     }
-} 
+}
+
+const dealersHandContainer = document.querySelector("#dealers-hand-container")
+
+//play against dealer
+playButton.addEventListener('click', event => {
+    event.preventDefault()
+
+    dealButton.style.display = "flex"
+    quitButton.style.display = "flex"
+    playButton.style.display = "none"
+    foldButton.style.display = "none"
+
+    pairPlusValue.textContent = "";
+    anteValue.textContent = "";
+
+    //display players hand header
+    dealersHandContainer.style.display = "flex"
+
+    //get players hand
+    const handURL = `https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=3`
+
+    fetch(handURL)
+        .then(parseJSON)
+        .then(response => response.cards.map(appendDealersCard))
+        .then(() => {
+            appendHandDescription(playersHandValues)   
+        })
+        // .then(() => {
+        //     purse = purse + pairPlusPayout(pairPlusValue.textContent, playersHandValues)
+        //     purseValue.textContent = purse;
+        // })
+})
+
+function appendDealersCard(card) {
+    let cardImg = document.createElement("img")
+    cardImg.src = card.image
+    dealersHand.appendChild(cardImg)
+
+    dealersHandValues.push(card.code)
+}
+
+function handTypeValue(hand) {
+    let handType = handValue(hand)[0]
+
+    switch(handType) {
+        case 'Pair':
+            return 1;
+        case 'Flush':
+            return 2;
+        case 'Straight':
+            return 3;
+        case 'Three Of a Kind':
+            return 4;
+        case 'Straight Flush':
+            return 5;
+        default:
+            return 0;
+    }
+}
+
+function playerWins(playersHand, dealersHand) {
+    const playersHandType = handTypeValue(playersHand)
+    const dealersHandType = handTypeValue(dealersHand)
+
+    if (playersHandType > dealersHandType) {
+        return true
+    }
+
+    if (playersHandType < dealersHandType) {
+        return false
+    }
+
+    const playersHandValue = handValue(playersHand)[1]
+    const dealersHandValue = handValue(dealersHand)[1]
+
+    if (playersHandValue === dealersHandValue) {
+        if (playersHandValue > dealersHandValue) {
+            return true
+        } else if (playersHandValue === dealersHandValue) {
+            const playersHandOther = handValue(playersHand[2])
+            const dealersHandOther = handValue(dealersHand[2])
+            if (playersHandOther > dealersHandOther) {
+                return true
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+    } 
+}
+
+const resultsSection = document.querySelector('#results-section')
+const resultsDescription = document.querySelector('#results-description')
+
+//quit game
+quitButton.addEventListener('click', event => {
+    event.preventDefault()
+
+    userOptionsSection.style.display = "none"
+    resultsSection.style.display = "flex"
+
+    const result = `Your final purse is ${purse}`
+    resultsDescription.textContent = result
+})

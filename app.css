@@ -167,7 +167,7 @@ label{
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    width: 60%;
+    width: 80%;
     margin-top: 20px 0 20px 0;
     font-family: 'Fredoka One', cursive;
     border-style: solid;
@@ -208,7 +208,7 @@ label{
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    width: 30%;
+    width: 50%;
     margin-top: 20px 0 20px 0;
     font-family: 'Fredoka One', cursive;
     border-style: solid;
@@ -250,4 +250,24 @@ label{
 
 #play-button{
     display: none;
+}
+
+#results-section{
+    display:none;
+    justify-content:center;
+    margin-top: 20px;
+}
+
+#results-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 60%;
+    margin-top: 20px 0 20px 0;
+    font-family: 'Fredoka One', cursive;
+    border-style: solid;
+    border-color: black;
+    border-radius: 20%;
+    background-color: lawngreen;
 }
