@@ -208,7 +208,7 @@ label{
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    width: 50%;
+    width: 40%;
     margin-top: 20px 0 20px 0;
     font-family: 'Fredoka One', cursive;
     border-style: solid;
@@ -263,7 +263,7 @@ label{
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    width: 60%;
+    width: 30%;
     margin-top: 20px 0 20px 0;
     font-family: 'Fredoka One', cursive;
     border-style: solid;

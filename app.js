@@ -40,6 +40,9 @@ const logOutButton = document.querySelector("#user-logout")
 
 const colorChoiceForm = document.querySelector("#color-choice-form")
 const userOptionsSection = document.querySelector("#user-options-section")
+const betsForm = document.querySelector('#bets-form')
+const betsMessage = document.querySelector('#bets-message')
+const purseValue = document.querySelector('#purse span')
 
 userLogin.addEventListener("submit", event => {
     event.preventDefault()
@@ -63,8 +66,15 @@ userLogin.addEventListener("submit", event => {
     .then(() => displayLoginMessage(user))
     
     clearHands()
-    purse = 1000
-    userOptionsSection.style.display = "none"
+    purse = 3000
+    purseValue.textContent = purse
+
+    foldButton.style.display = "none"
+    playButton.style.display = "none"
+    dealButton.style.display = "none"
+    quitButton.style.display = "flex"
+    betsForm.style.display = "flex"
+    betsMessage.style.display = "inline"
 })
 
 function parseJSON(response) {
@@ -136,13 +146,11 @@ const foldButton = document.querySelector("#fold-button")
 const quitButton = document.querySelector("#quit-button")
 
 //get player's bets
-const betsForm = document.querySelector('#bets-form')
 const betsFormSubmit = document.querySelector('#bets-submit')
-const purseValue = document.querySelector('#purse span')
 const pairPlusValue = document.querySelector('#pair-plus span')
 const anteValue = document.querySelector('#ante span')
 
-let purse = 1000
+let purse = 3000
 purseValue.textContent = purse;
 
 betsForm.addEventListener('submit', event => {
@@ -163,10 +171,15 @@ betsForm.addEventListener('submit', event => {
     //hide bet button and cashout button
     quitButton.style.display = 'none'
     betsForm.style.display = 'none'
+    betsMessage.style.display = "none"
+    handsContainer.style.display = "none"
+
+    dealButton.style.display = "flex"
 })
 
 const playersHandContainer = document.querySelector("#players-hand-container")
 const playersHandDescription = document.querySelector("#players-hand-description")
+const dealersHandContainer = document.querySelector("#dealers-hand-container")
 
 const deckURL = "https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1"
 
@@ -183,6 +196,7 @@ fetch(deckURL)
 //deal player's hand
 dealButton.addEventListener("click", event => {
     event.preventDefault()
+    clearHands()
     
     dealButton.style.display = "none"
     quitButton.style.display = "none"
@@ -194,6 +208,7 @@ dealButton.addEventListener("click", event => {
 
     //display players hand header
     playersHandContainer.style.display = "flex"
+    dealersHandContainer.style.display = "none"
 
     //get players hand
     const handURL = `https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=3`
@@ -218,10 +233,11 @@ foldButton.addEventListener('click', event => {
     handsContainer.style.display = "none"
     foldButton.style.display = "none"
     playButton.style.display = "none"
-    dealButton.style.display = "flex"
+    dealButton.style.display = "none"
     quitButton.style.display = "flex"
 
     betsForm.style.display = "flex"
+    betsMessage.style.display = "inline"
     pairPlusValue.textContent = "";
     anteValue.textContent = "";
 })
@@ -385,16 +401,20 @@ function pairPlusPayout(bet, hand) {
     }
 }
 
-const dealersHandContainer = document.querySelector("#dealers-hand-container")
+
+const dealersHandDescription = document.querySelector("#dealers-hand-description")
 
 //play against dealer
 playButton.addEventListener('click', event => {
     event.preventDefault()
 
-    dealButton.style.display = "flex"
+    dealButton.style.display = "none"
     quitButton.style.display = "flex"
     playButton.style.display = "none"
     foldButton.style.display = "none"
+    
+    betsForm.style.display = "flex"
+    betsMessage.style.display = "inline"
 
     pairPlusValue.textContent = "";
     anteValue.textContent = "";
@@ -409,7 +429,7 @@ playButton.addEventListener('click', event => {
         .then(parseJSON)
         .then(response => response.cards.map(appendDealersCard))
         .then(() => {
-            appendHandDescription(playersHandValues)   
+            appendPokerResult(playersHandValues, dealersHandValues)   
         })
         // .then(() => {
         //     purse = purse + pairPlusPayout(pairPlusValue.textContent, playersHandValues)
@@ -459,12 +479,12 @@ function playerWins(playersHand, dealersHand) {
     const playersHandValue = handValue(playersHand)[1]
     const dealersHandValue = handValue(dealersHand)[1]
 
-    if (playersHandValue === dealersHandValue) {
+    if (playersHandType === dealersHandType) {
         if (playersHandValue > dealersHandValue) {
             return true
         } else if (playersHandValue === dealersHandValue) {
-            const playersHandOther = handValue(playersHand[2])
-            const dealersHandOther = handValue(dealersHand[2])
+            const playersHandOther = handValue(playersHand)[2]
+            const dealersHandOther = handValue(dealersHand)[2]
             if (playersHandOther > dealersHandOther) {
                 return true
             } else {
@@ -476,6 +496,14 @@ function playerWins(playersHand, dealersHand) {
     } 
 }
 
+function appendPokerResult(playersHand, dealersHand) {
+    if(playerWins(playersHand, dealersHand)) {
+        dealersHandDescription.textContent = 'YOU WIN !'
+    } else {
+        dealersHandDescription.textContent = 'YOU LOSE...'
+    }
+}
+
 const resultsSection = document.querySelector('#results-section')
 const resultsDescription = document.querySelector('#results-description')
 
@@ -483,6 +511,7 @@ const resultsDescription = document.querySelector('#results-description')
 quitButton.addEventListener('click', event => {
     event.preventDefault()
 
+    handsContainer.style.display = "none"
     userOptionsSection.style.display = "none"
     resultsSection.style.display = "flex"
 
