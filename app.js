@@ -407,12 +407,14 @@ const dealersHandDescription = document.querySelector("#dealers-hand-description
 //play against dealer
 playButton.addEventListener('click', event => {
     event.preventDefault()
+    const ante = parseInt(anteValue.textContent)
+    let purse = parseInt(purseValue.textContent)
 
     dealButton.style.display = "none"
     quitButton.style.display = "flex"
     playButton.style.display = "none"
     foldButton.style.display = "none"
-    
+
     betsForm.style.display = "flex"
     betsMessage.style.display = "inline"
 
@@ -429,12 +431,13 @@ playButton.addEventListener('click', event => {
         .then(parseJSON)
         .then(response => response.cards.map(appendDealersCard))
         .then(() => {
-            appendPokerResult(playersHandValues, dealersHandValues)   
+            const payout = payOutPlay(ante, playersHandValues)
+            console.log(ante)
+            console.log(payout)
+            purse = purse + payout;
+            purseValue.textContent = purse;
+            appendPokerResult(playersHandValues, dealersHandValues, payout)   
         })
-        // .then(() => {
-        //     purse = purse + pairPlusPayout(pairPlusValue.textContent, playersHandValues)
-        //     purseValue.textContent = purse;
-        // })
 })
 
 function appendDealersCard(card) {
@@ -496,11 +499,29 @@ function playerWins(playersHand, dealersHand) {
     } 
 }
 
-function appendPokerResult(playersHand, dealersHand) {
+function appendPokerResult(playersHand, dealersHand, payout) {
     if(playerWins(playersHand, dealersHand)) {
-        dealersHandDescription.textContent = 'YOU WIN !'
+        dealersHandDescription.textContent = `YOU WIN ${payout}!`
     } else {
         dealersHandDescription.textContent = 'YOU LOSE...'
+    }
+}
+
+function payOutPlay(bet, hand) {
+    const handType = handValue(hand)[0]
+    switch(handType) {
+        case 'Straight Flush':
+            return bet * 6
+        case 'Three Of a Kind':
+            return bet * 5
+        case 'Straight':
+            return bet * 2
+        // case 'Pair':
+        //     return bet
+        // case 'Flush':
+        //     return bet
+        default:
+            return bet
     }
 }
 
