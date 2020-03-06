@@ -253,8 +253,9 @@ label{
 }
 
 #results-section{
-    display:none;
+    display: none;
     justify-content:center;
+    height: 15rem;
     margin-top: 20px;
 }
 
@@ -264,10 +265,15 @@ label{
     justify-content: space-evenly;
     align-items: center;
     width: 30%;
+    height: 100%;
     margin-top: 20px 0 20px 0;
     font-family: 'Fredoka One', cursive;
     border-style: solid;
     border-color: black;
     border-radius: 20%;
     background-color: lawngreen;
+}
+
+#leaderboard-button{
+    height: 100%;
 }

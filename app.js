@@ -83,6 +83,7 @@ function parseJSON(response) {
 
 function storeToken(response) {
     localStorage.setItem("token", response.token)
+    localStorage.setItem("user_id", response.user_id)
 }
 
 
@@ -159,7 +160,10 @@ betsForm.addEventListener('submit', event => {
     const formData = new FormData(event.target)
     const pairPlus = formData.get("pairPlus")
     const ante = formData.get("ante")
-
+    console.log(purse)
+    console.log(pairPlus)
+    console.log(ante)
+    
     //update purse
     purse = purse - pairPlus - ante;
     purseValue.textContent = purse;
@@ -432,11 +436,11 @@ playButton.addEventListener('click', event => {
         .then(response => response.cards.map(appendDealersCard))
         .then(() => {
             const payout = payOutPlay(ante, playersHandValues)
-            console.log(ante)
-            console.log(payout)
-            purse = purse + payout;
-            purseValue.textContent = purse;
             appendPokerResult(playersHandValues, dealersHandValues, payout)   
+            if(playerWins(playersHandValues, dealersHandValues)) {
+                purse = purse + payout;
+                purseValue.textContent = purse;
+            }
         })
 })
 
@@ -516,10 +520,6 @@ function payOutPlay(bet, hand) {
             return bet * 5
         case 'Straight':
             return bet * 2
-        // case 'Pair':
-        //     return bet
-        // case 'Flush':
-        //     return bet
         default:
             return bet
     }
@@ -536,6 +536,20 @@ quitButton.addEventListener('click', event => {
     userOptionsSection.style.display = "none"
     resultsSection.style.display = "flex"
 
-    const result = `Your final purse is ${purse}`
-    resultsDescription.textContent = result
+    const finalPurseMessage = `Your final purse is ${purse}`
+    resultsDescription.textContent = finalPurseMessage
+
+    const result = {
+        user_id: localStorage.getItem("user_id"),
+        score: purse
+    }
+
+    fetch("https://three-card-poker-backend.herokuapp.com/scores", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify(result)
+    })
 })
