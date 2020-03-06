@@ -42,11 +42,11 @@
                     <label for="green-background-choice">Green</label>
                 </div>
                 <div class="color-choice">
-                    <input type="radio" id="yellow-background-choice" name="background-color" value="yellow" checked>
+                    <input type="radio" id="yellow-background-choice" name="background-color" value="yellow">
                     <label for="yellow-background-choice">Yellow</label>
                 </div>
                 <div class="color-choice">
-                    <input type="radio" id="red-background-choice" name="background-color" value="red" checked>
+                    <input type="radio" id="red-background-choice" name="background-color" value="red">
                     <label for="red-background-choice">Red</label>
                 </div>
                 <div id="color-choice-submit">
@@ -71,13 +71,12 @@
         <section id="user-options-section">
             <section id="user-options-container">
                 <div id="purse-container">
-                    <h1 id="purse">Purse:</h1>
+                    <h1 id="purse">Purse: <span></span></h1>
                 </div>
                 <div id="bets-display-container">
                     <h1 id="pair-plus">Pair Plus: <span></span></h1>
                     <h1 id="ante">Ante: <span></span></h1>
                 </div>
-
                 <div id="bets-container">
                     <form id="bets-form">
                         <input type="number" name="pairPlus" placeholder="pair plus" class="form-field">
@@ -85,8 +84,11 @@
                         <input type="submit" value="BET" id="bets-submit" class="form-field">  
                     </form>
                 </div>
-                <div id="button-container">
-                    <button id="deal-button">DEAL EM</button>
+                <div id="buttons-container">
+                    <button id="deal-button" class="user-option-button">DEAL EM</button>
+                    <button id="quit-button" class="user-option-button">CASH OUT</button>
+                    <button id="fold-button" class="user-option-button">FOLD</button>
+                    <button id="play-button" class="user-option-button">PLAY</button>
                 </div>
             </section>
         </section>
