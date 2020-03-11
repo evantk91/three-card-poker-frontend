@@ -1,12 +1,13 @@
 const signup_message = document.querySelector("#signup-message")
 const login_message = document.querySelector("#login-message")
-
-//User Sign-up
 const userSignUp = document.querySelector("#new-user-signup")
 const usersURL = "https://three-card-poker-backend.herokuapp.com/users"
+let purse
 
+//clear local storage
 localStorage.clear()
 
+//User Sign-up
 userSignUp.addEventListener("submit", event => {
     event.preventDefault()
 
@@ -15,9 +16,7 @@ userSignUp.addEventListener("submit", event => {
         username: formData.get("username"),
         password: formData.get("password")
     }
-
-    console.log(user)
-
+    
     fetch(usersURL, {
         method: "POST",
         headers: {
@@ -38,6 +37,7 @@ const userLogin = document.querySelector("#user-login")
 const userLoginButton = document.querySelector("#user-login-submit")
 const logOutButton = document.querySelector("#user-logout")
 
+const colorChoiceContainer = document.querySelector("#color-choice-container")
 const colorChoiceForm = document.querySelector("#color-choice-form")
 const userOptionsSection = document.querySelector("#user-options-section")
 const betsForm = document.querySelector('#bets-form')
@@ -69,10 +69,13 @@ userLogin.addEventListener("submit", event => {
     purse = 3000
     purseValue.textContent = purse
 
+    colorChoiceContainer.style.display = "flex"
+
     foldButton.style.display = "none"
     playButton.style.display = "none"
     dealButton.style.display = "none"
     quitButton.style.display = "flex"
+
     betsForm.style.display = "flex"
     betsMessage.style.display = "inline"
 })
@@ -106,6 +109,25 @@ function displayLoginMessage(user) {
     } 
 }
 
+//open/close rules
+const rulesButton = document.querySelector("#rules-button")
+const closeRulesButton = document.querySelector("#close-rules-button")
+const rulesSection = document.querySelector("#rules-section")
+
+rulesButton.addEventListener('click', event =>{
+    event.preventDefault()
+    rulesSection.style.display = "flex"
+    rulesButton.style.display = "none"
+    closeRulesButton.style.display = "flex"
+})
+
+closeRulesButton.addEventListener('click', event =>{
+    event.preventDefault()
+    rulesSection.style.display = "none"
+    rulesButton.style.display = "flex"
+    closeRulesButton.style.display = "none"
+})
+
 //User Logout
 const documentBody = document.querySelector("body")
 const handsContainer = document.querySelector("#hands-section")
@@ -123,6 +145,9 @@ logOutButton.addEventListener("click", event => {
     handsContainer.style.display = "none"
     userOptionsSection.style.display = "none"
     resultsSection.style.display = "none"
+
+    rulesSection.style.display = "none"
+    rulesButton.style.display = "none"
     
     //display new user signup
     userSignUp.style.display = "block"
@@ -150,23 +175,25 @@ const quitButton = document.querySelector("#quit-button")
 const betsFormSubmit = document.querySelector('#bets-submit')
 const pairPlusValue = document.querySelector('#pair-plus span')
 const anteValue = document.querySelector('#ante span')
-
-let purse = 3000
-purseValue.textContent = purse;
+const playValue = document.querySelector('#play span')
 
 betsForm.addEventListener('submit', event => {
     event.preventDefault()
+    console.log('Initial purse: ', purse)
 
     const formData = new FormData(event.target)
     const pairPlus = formData.get("pairPlus")
     const ante = formData.get("ante")
-    console.log(purse)
-    console.log(pairPlus)
-    console.log(ante)
+    console.log('pairPlus: ', pairPlus)
+    console.log(`Ante: ${ante}`)
+    
+
+    playValue.textContent = '';
     
     //update purse
     purse = purse - pairPlus - ante;
     purseValue.textContent = purse;
+    console.log('Purse after pair plus/ante:', purse)
 
     //display pair plus bet and ante bet
     pairPlusValue.textContent = pairPlus;
@@ -192,16 +219,13 @@ let playersHandValues = []
 let dealersHandValues = []
 let handInfo
 
-//get deck id
-fetch(deckURL)
-    .then(parseJSON)
-    .then(deck => {deckId = deck.deck_id})
-
 //deal player's hand
 dealButton.addEventListener("click", event => {
     event.preventDefault()
     clearHands()
-    
+
+    let handURL
+
     dealButton.style.display = "none"
     quitButton.style.display = "none"
     playButton.style.display = "flex"
@@ -214,18 +238,26 @@ dealButton.addEventListener("click", event => {
     playersHandContainer.style.display = "flex"
     dealersHandContainer.style.display = "none"
 
-    //get players hand
-    const handURL = `https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=3`
+    pairPlus = parseInt(pairPlusValue.textContent)
 
-    fetch(handURL)
+    //get players hand
+    fetch(deckURL)
         .then(parseJSON)
-        .then(response => response.cards.map(appendPlayersCard))
+        .then(deck => {deckId = deck.deck_id})
         .then(() => {
-            appendPlayersHandDescription(playersHandValues)   
-        })
-        .then(() => {
-            purse = purse + pairPlusPayout(pairPlusValue.textContent, playersHandValues)
-            purseValue.textContent = purse;
+            handURL = `https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=3`;
+            console.log(deckId)
+
+            fetch(handURL)
+                .then(parseJSON)
+                .then(response => response.cards.map(appendPlayersCard))
+                .then(() => {
+                    appendPlayersHandDescription(playersHandValues)   
+                })
+                .then(() => {
+                    // purse = purse + pairPlusPayout(pairPlus, playersHandValues)
+                    purseValue.textContent = purse;
+                })
         })
 })
 
@@ -264,17 +296,18 @@ function appendPlayersCard(card) {
 
 function appendPlayersHandDescription(hand) {
     let value = handValue(hand)[1]
+    const pairPlus = parseInt(pairPlusValue.textContent)
 
     if(isPair(hand)) {
-        playersHandDescription.textContent =`Pair of ${handValueToType(value)}. You win ${pairPlusPayout(pairPlusValue.textContent, hand)} !`;
+        playersHandDescription.textContent =`Pair of ${handValueToType(value)}. You win ${pairPlusPayout(pairPlus, hand) - pairPlus} !`;
     } else if(isStraightFlush(hand)) {
-        playersHandDescription.textContent =`WOO HOO STRAIGHT FLUSH ${handValueToType(value)} HIGH, WIN ${pairPlusPayout(pairPlusValue.textContent, hand)}!!!!`;
+        playersHandDescription.textContent =`WOO HOO STRAIGHT FLUSH ${handValueToType(value)} HIGH, WIN ${pairPlusPayout(pairPlus, hand) - pairPlus}!!!!`;
     } else if(isStraight(hand)) {
-        playersHandDescription.textContent =`WOO ${handValueToType(value)} HIGH STRAIGHT, WIN ${pairPlusPayout(pairPlusValue.textContent, hand)} !!`;
+        playersHandDescription.textContent =`WOO ${handValueToType(value)} HIGH STRAIGHT, WIN ${pairPlusPayout(pairPlus, hand) - pairPlus} !!`;
     } else if(isFlush(hand)) {
-        playersHandDescription.textContent =`WOO ${handValueToType(value)} HIGH FLUSH, WIN ${pairPlusPayout(pairPlusValue.textContent, hand)} !!`;
+        playersHandDescription.textContent =`WOO ${handValueToType(value)} HIGH FLUSH, WIN ${pairPlusPayout(pairPlus, hand) - pairPlus} !!`;
     } else if(isThreeOfKind(hand)) {
-        playersHandDescription.textContent =`WOO SET OF ${handValueToType(value)}s, WIN ${pairPlusPayout(pairPlusValue.textContent, hand)}!!!`;
+        playersHandDescription.textContent =`WOO SET OF ${handValueToType(value)}s, WIN ${pairPlusPayout(pairPlus, hand) - pairPlus}!!!`;
     } else {
         playersHandDescription.textContent =`Ahh ${handValueToType(value)} high...`;
     }
@@ -391,28 +424,29 @@ function pairPlusPayout(bet, hand) {
 
     switch(handType) {
         case 'Pair':
-            return 2 * bet;
+            return (1 * bet + bet);
         case 'Flush':
-            return 5 * bet;
+            return (3 * bet + bet);
         case 'Straight':
-            return 6 * bet;
+            return (6 * bet + bet);
         case 'Three Of a Kind':
-            return 31 * bet;
+            return (30 * bet + bet);
         case 'Straight Flush':
-            return 41 * bet;
+            return (40 * bet + bet);
         default:
             return 0;
     }
 }
 
-
 const dealersHandDescription = document.querySelector("#dealers-hand-description")
 
 //play against dealer
 playButton.addEventListener('click', event => {
-    event.preventDefault()
     const ante = parseInt(anteValue.textContent)
-    let purse = parseInt(purseValue.textContent)
+    const play = ante
+    
+    //display play value
+    playValue.textContent = play 
 
     dealButton.style.display = "none"
     quitButton.style.display = "flex"
@@ -422,27 +456,52 @@ playButton.addEventListener('click', event => {
     betsForm.style.display = "flex"
     betsMessage.style.display = "inline"
 
-    pairPlusValue.textContent = "";
-    anteValue.textContent = "";
-
-    //display players hand header
     dealersHandContainer.style.display = "flex"
 
-    //get players hand
+    //update purse
+    purse = purse - ante
+    purseValue.textContent = purse;
+    console.log('Purse after play:', purse)
+
+    //get dealers hand
     const handURL = `https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=3`
 
     fetch(handURL)
         .then(parseJSON)
         .then(response => response.cards.map(appendDealersCard))
         .then(() => {
-            const payout = payOutPlay(ante, playersHandValues)
-            appendPokerResult(playersHandValues, dealersHandValues, payout)   
-            if(playerWins(playersHandValues, dealersHandValues)) {
-                purse = purse + payout;
-                purseValue.textContent = purse;
+            //if dealer hand qualifies
+            if(dealersHandPlays(dealersHandValues)) {
+                if(playerWins(playersHandValues, dealersHandValues)) {
+                    //winnings from beating dealer
+                    // purse = purse +  2 * ante + 2 * play
+                    dealersHandDescription.textContent = `Dealers hand qualifies. YOU WIN!`
+                } else {
+                    dealersHandDescription.textContent = `Dealers hand qualifies. you lose...`
+                }
+            } else {
+                if(playerWins(playersHandValues, dealersHandValues)) {
+                    //winnings from beating dealer
+                    // purse = purse + ante + 2 * play
+                    dealersHandDescription.textContent = `Dealers hand doesnt qualify`
+                } else {
+                    dealersHandDescription.textContent = `Dealers hand doesnt qualify. you lose...`
+                }
             }
+
+            console.log('Purse after paying play:', purse)
+            console.log(purse)
+            //purseValue.textContent = purse;
         })
 })
+
+function appendPokerResult(playersHand, dealersHand, payout) {
+    if(playerWins(playersHand, dealersHand)) {
+        dealersHandDescription.textContent = `YOU WIN ${payout}!`
+    } else {
+        dealersHandDescription.textContent = 'YOU LOSE...'
+    }
+}
 
 function appendDealersCard(card) {
     let cardImg = document.createElement("img")
@@ -471,14 +530,28 @@ function handTypeValue(hand) {
     }
 }
 
+function dealersHandPlays(hand) {
+    const handType = handTypeValue(hand)
+
+    if(handType > 0) {
+        return true
+    } else if(handValue(hand)[1] > 11) {
+        return true
+    } else {
+        return false
+    }
+}
+
 function playerWins(playersHand, dealersHand) {
     const playersHandType = handTypeValue(playersHand)
     const dealersHandType = handTypeValue(dealersHand)
 
+    //if players hand has a better type
     if (playersHandType > dealersHandType) {
         return true
     }
 
+    //if dealers hand has a better type
     if (playersHandType < dealersHandType) {
         return false
     }
@@ -486,30 +559,65 @@ function playerWins(playersHand, dealersHand) {
     const playersHandValue = handValue(playersHand)[1]
     const dealersHandValue = handValue(dealersHand)[1]
 
+    //if dealers hand and players hand have the same type
     if (playersHandType === dealersHandType) {
-        if (playersHandValue > dealersHandValue) {
-            return true
-        } else if (playersHandValue === dealersHandValue) {
+        //if hand is better than a pair, compare value of hand
+        if (playersHandType > 1) { 
+            return (playersHandValue > dealersHandValue) ? true : false 
+        }
+
+        //if hand is a pair
+        if (playersHandType === 1) {
             const playersHandOther = handValue(playersHand)[2]
             const dealersHandOther = handValue(dealersHand)[2]
-            if (playersHandOther > dealersHandOther) {
+            
+            if(playersHandValue > dealersHandValue) {
                 return true
+            } else if (playersHandValue === dealersHandValue) {
+                //compare other card
+                if (playersHandOther === dealersHandOther) {
+                    return "push"
+                } else {
+                    return (playersHandOther > dealersHandOther) ? true : false
+                }
             } else {
                 return false
             }
-        } else {
-            return false
+        }
+
+        //If hand is a no pair
+        if (playersHandType === 0) {
+            sortedPlayersHand = sortedHandValues(playersHand)
+            sortedDealersHand = sortedHandValues(dealersHand)
+
+            //If hands have the same values
+            if((sortedPlayersHand[0] === sortedDealersHand[0]) && (sortedPlayersHand[1] === sortedDealersHand[1]) && (sortedPlayersHand[2] === sortedDealersHand[2])) { return "push" }
+
+            //If hands have two of the same values, compare the third
+            if((sortedPlayersHand[1] === sortedDealersHand[1]) && (sortedPlayersHand[2] === sortedDealersHand[2])) {
+                if (sortedPlayersHand[0] > sortedDealersHand[0]) {
+                    return true
+                } else {
+                    return false
+                }
+            }
+
+            if(sortedPlayersHand[2] > sortedDealersHand[2]) {
+                return true
+            } else if (sortedPlayersHand[2] === sortedDealersHand[2]) {
+                if (sortedPlayersHand[1] > sortedDealersHand[1]) {
+                    return true
+                } else {
+                    return false
+                }
+            } else {
+                return false
+            }
         }
     } 
 }
 
-function appendPokerResult(playersHand, dealersHand, payout) {
-    if(playerWins(playersHand, dealersHand)) {
-        dealersHandDescription.textContent = `YOU WIN ${payout}!`
-    } else {
-        dealersHandDescription.textContent = 'YOU LOSE...'
-    }
-}
+
 
 function payOutPlay(bet, hand) {
     const handType = handValue(hand)[0]
@@ -535,6 +643,7 @@ quitButton.addEventListener('click', event => {
     handsContainer.style.display = "none"
     userOptionsSection.style.display = "none"
     resultsSection.style.display = "flex"
+    rulesButton.style.display = "none"
 
     const finalPurseMessage = `Your final purse is ${purse}`
     resultsDescription.textContent = finalPurseMessage
@@ -552,4 +661,40 @@ quitButton.addEventListener('click', event => {
         },
         body: JSON.stringify(result)
     })
+
+    fetch("https://three-card-poker-backend.herokuapp.com/scores", {
+        headers: {
+            "Authorization": `bearer ${localStorage.getItem("token")}`
+        }
+    })
+    .then(parseJSON)
+    .then(scores => {let topScores = topTenScores(scores)})
+    .then(() => {topScores.map(score => appendScore(score))})
+})
+
+function topTenScores(scores) {
+    sortedScores = scores.sort((a, b) => (a.score > b.score) ? 1 : -1)
+    topScores = scores.slice(0, 10)
+    return topScores
+}
+
+function appendScore(score) {
+    fetch(`https://three-card-poker-backend.herokuapp.com/users/${score.user_id}`)
+        .then(parseJSON)
+        .then(user => {
+            let row = document.createElement('tr')
+            row.innerHTML = `<td>${user.username}</td><td>${score.score}</td>`
+            leaderboardBody.appendChild(row)
+        })
+}
+
+//display leaderboard
+const leaderboardButton = document.querySelector("#leaderboard-button")
+const leaderboardBody = document.querySelector("#leaderboard-body")
+const leaderboardSection = document.querySelector("#leaderboard-section")
+
+leaderboardButton.addEventListener('click', event => {
+    event.preventDefault()
+    resultsSection.style.display = "none" 
+    leaderboardSection.style.display = "flex" 
 })

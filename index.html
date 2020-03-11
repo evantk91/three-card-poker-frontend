@@ -34,7 +34,7 @@
                 <button id="user-logout">Log Out</button>
             </section>
         </nav>
-        <section id="user-actions-container">
+        <section id="color-choice-container">
             <form id="color-choice-form">
                 <p id="color-choice-label">Select Background Color:</p>
                 <div class="color-choice">
@@ -53,6 +53,20 @@
                     <button type="submit">Submit</button>
                 </div>
             </form>
+            <button id="rules-button" class="user-option-button">RULES</button>
+            <button id="close-rules-button" class="user-option-button">CLOSE RULES</button>
+        </section>
+        <section id="rules-section">
+            <section id=rules-container>
+                <h1>Rules:</h1>
+                <ul id="rules-list">
+                    <li>Place an ante to play and/or a pair plus bet to bet that your hand will be a pair or better</li>
+                    <li>You get paid out on the pair plus based on your hand</li>
+                    <li>Decide whether to play against the dealer or fold. You should play queens high or better.</li>
+                    <li>If you play and beats the dealer, you get paid depending on your hand.</li>
+                    <li>If the dealer has a jack high or worse, the play bet is not paid out and is returned.</li>
+                </ul>
+            </section>
         </section>
         <section id="hands-section">
             <section id="hands-container">
@@ -69,6 +83,22 @@
             </section>
         </section>
         <section id="user-options-section">
+            <section id="payout-description-container">
+                <h1>Pair Plus Payout:</h1>
+                <ul class="payout-list">
+                    <li>Straight Flush: 40 to 1</li>
+                    <li>Three of a Kind: 30 to 1</li>
+                    <li>Straight: 6 to 1</li>
+                    <li>Flush: 3 to 1</li>
+                    <li>Pair: 1 to 1</li>
+                </ul>
+                <h1>Pair Plus Payout:</h1>
+                <ul class="payout-list">
+                    <li>Straight Flush: 5 to 1</li>
+                    <li>Three of a Kind: 4 to 1</li>
+                    <li>Straight: 1 to 1</li>
+                </ul>
+            </section>
             <section id="user-options-container">
                 <div id="purse-container">
                     <h1 id="purse">Purse: <span></span></h1>
@@ -76,6 +106,7 @@
                 <div id="bets-display-container">
                     <h1 id="pair-plus">Pair Plus: <span></span></h1>
                     <h1 id="ante">Ante: <span></span></h1>
+                    <h1 id="play">Play: <span></span></h1>
                 </div>
                 <div id="bets-container">
                     <h1 id="bets-message">Place your bets!!</h1> 
@@ -101,6 +132,19 @@
                 <div id="leaderboard-button-containter">
                     <button id="leaderboard-button" class="user-option-button">LEADERBOARD</button>
                 </div>
+            </div>
+        </section>
+        <section id="leaderboard-section">
+            <div id="leaderboard-container">
+                <h1>Leaderboard:</h1>
+                <table id="leaderboard">
+                    <thead id="leaderboard-headers">
+                        <th>User</th>
+                        <th>Score</th>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                    </tbody>
+                </table>
             </div>
         </section>
     </main>
