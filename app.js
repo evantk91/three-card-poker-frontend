@@ -78,6 +78,7 @@ userLogin.addEventListener("submit", event => {
 
     betsForm.style.display = "flex"
     betsMessage.style.display = "inline"
+    userOptionsSection.style.display = "flex"
 })
 
 function parseJSON(response) {
@@ -688,13 +689,24 @@ function appendScore(score) {
         })
 }
 
+const playAgainButton = document.querySelector('#play-again-button')
+
+playAgainButton.addEventListener('click', event => {
+    rulesButton.style.display = "flex"
+})
+
 //display leaderboard
 const leaderboardButton = document.querySelector("#leaderboard-button")
+const closeLeaderboardButton = document.querySelector("#close-leaderboard-button")
 const leaderboardBody = document.querySelector("#leaderboard-body")
 const leaderboardSection = document.querySelector("#leaderboard-section")
 
 leaderboardButton.addEventListener('click', event => {
-    event.preventDefault()
     resultsSection.style.display = "none" 
     leaderboardSection.style.display = "flex" 
+})
+
+closeLeaderboardButton.addEventListener('click', event => {
+    resultsSection.style.display = "flex" 
+    leaderboardSection.style.display = "none" 
 })
