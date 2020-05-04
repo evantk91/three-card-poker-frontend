@@ -648,6 +648,8 @@ const playAgainButton = document.querySelector('#play-again-button')
 
 playAgainButton.addEventListener('click', event => {
     rulesButton.style.display = "flex"
+    userOptionsSection.style.display = "flex"
+    resultsSection.style.display = "none"
 })
 
 //display leaderboard
