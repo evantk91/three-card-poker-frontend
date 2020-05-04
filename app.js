@@ -614,6 +614,7 @@ function payOutPlay(bet, hand) {
 
 const resultsSection = document.querySelector('#results-section')
 const resultsDescription = document.querySelector('#results-description')
+const scoresURL = "https://three-card-poker-backend.herokuapp.com/api/v1/scores"
 
 //quit game
 quitButton.addEventListener('click', event => {
@@ -634,7 +635,7 @@ quitButton.addEventListener('click', event => {
         }
     }
 
-    fetch("https://three-card-poker-backend.herokuapp.com/api/v1/scores", {
+    fetch(scoresURL, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -650,6 +651,9 @@ playAgainButton.addEventListener('click', event => {
     rulesButton.style.display = "flex"
     userOptionsSection.style.display = "flex"
     resultsSection.style.display = "none"
+
+    purse = 3000
+    purseValue.textContent = purse
 })
 
 //display leaderboard
@@ -664,7 +668,7 @@ leaderboardButton.addEventListener('click', event => {
 
     clearLeaderboard(leaderboardBody);
     
-    fetch("https://three-card-poker-backend.herokuapp.com/api/v1/scores", {
+    fetch(scoresURL, {
         headers: {
             "Authorization": `bearer ${localStorage.getItem("token")}`
         }
@@ -697,6 +701,6 @@ function topTenScores(scores) {
 
 function appendScore(score) {
     let row = document.createElement('tr')
-    row.innerHTML = `<td>${user.username}</td><td>${score.score}</td>`
+    row.innerHTML = `<td>${score.user.username}</td><td>${score.score}</td>`
     leaderboardBody.appendChild(row)
 }
