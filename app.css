@@ -196,6 +196,7 @@ label{
     display: none;
     justify-content:center;
     margin-top: 20px;
+    height: 20rem;
 }
 
 #user-options-container{
@@ -227,7 +228,7 @@ label{
     display: flex;
     flex-direction: row;
     width: 100%;
-    height: 100%;
+    height: 50%;
     justify-content: space-around;
     margin: 10px 0 10px 0;
 }
@@ -326,10 +327,10 @@ label{
 
 #payout-description-container{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
-    width: 30%;
+    width: 40%;
     margin-top: 20px 0 20px 0;
     font-family: 'Fredoka One', cursive;
     border-style: solid;
@@ -340,7 +341,8 @@ label{
 
 .payout-list{
     margin-top: 0px;
-    margin-bottom: 20px
+    margin-bottom: 20px;
+    font-size: 12pt;
 }
 
 #leaderboard-section{

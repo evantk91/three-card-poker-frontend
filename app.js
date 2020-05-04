@@ -74,8 +74,6 @@ userLogin.addEventListener("submit", event => {
     .then(parseJSON)
     .then(storeToken)
     .then(() => displayGame(user))
-
-    signup_message.textContent = ''
 })
 
 function parseJSON(response) {
@@ -89,9 +87,7 @@ function storeToken(response) {
 
 function displayGame(user) {
     if (localStorage.getItem("token") !== null) {
-        signup_message.textContent = ''
         header.textContent = `LET'S GET PAID, ${user.username}!!!`
-        navCard.style.width = '50'
 
         clearHands()
         purse = 3000
@@ -110,9 +106,9 @@ function displayGame(user) {
 }
 
 //open/close rules
+const rulesSection = document.querySelector("#rules-section")
 const rulesButton = document.querySelector("#rules-button")
 const closeRulesButton = document.querySelector("#close-rules-button")
-const rulesSection = document.querySelector("#rules-section")
 
 rulesButton.addEventListener('click', event =>{
     event.preventDefault()
@@ -174,39 +170,31 @@ const quitButton = document.querySelector("#quit-button")
 
 //get player's bets
 const betsFormSubmit = document.querySelector('#bets-submit')
+const betsMessage = document.querySelector('#bets-message')
 const pairPlusValue = document.querySelector('#pair-plus span')
 const anteValue = document.querySelector('#ante span')
 const playValue = document.querySelector('#play span')
 
 betsForm.addEventListener('submit', event => {
     event.preventDefault()
-    console.log('Initial purse: ', purse)
 
     const formData = new FormData(event.target)
     const pairPlus = formData.get("pairPlus")
     const ante = formData.get("ante")
-    console.log('pairPlus: ', pairPlus)
-    console.log(`Ante: ${ante}`)
-    
 
-    playValue.textContent = '';
-    
     //update purse
     purse = purse - pairPlus - ante;
     purseValue.textContent = purse;
-    console.log('Purse after pair plus/ante:', purse)
 
     //display pair plus bet and ante bet
     pairPlusValue.textContent = pairPlus;
     anteValue.textContent = ante;
+    playValue.textContent = '';
 
     //hide bet button and cashout button
     quitButton.style.display = 'none'
     betsForm.style.display = 'none'
-    betsMessage.style.display = "none"
-    handsContainer.style.display = "none"
-
-    dealButton.style.display = "flex"
+    betsMessage.style.display = 'none'
 })
 
 const playersHandContainer = document.querySelector("#players-hand-container")
