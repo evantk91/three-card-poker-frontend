@@ -195,6 +195,9 @@ betsForm.addEventListener('submit', event => {
     quitButton.style.display = 'none'
     betsForm.style.display = 'none'
     betsMessage.style.display = 'none'
+
+    dealButton.style.display = 'flex'
+    handsContainer.style.display = "none"
 })
 
 const playersHandContainer = document.querySelector("#players-hand-container")
@@ -235,7 +238,6 @@ dealButton.addEventListener("click", event => {
         .then(deck => {deckId = deck.deck_id})
         .then(() => {
             handURL = `https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=3`;
-            console.log(deckId)
 
             fetch(handURL)
                 .then(parseJSON)
@@ -256,13 +258,14 @@ foldButton.addEventListener('click', event => {
     clearHands()
 
     handsContainer.style.display = "none"
+
     foldButton.style.display = "none"
     playButton.style.display = "none"
-    dealButton.style.display = "none"
     quitButton.style.display = "flex"
 
     betsForm.style.display = "flex"
     betsMessage.style.display = "inline"
+
     pairPlusValue.textContent = "";
     anteValue.textContent = "";
 })
@@ -450,7 +453,6 @@ playButton.addEventListener('click', event => {
     //update purse
     purse = purse - ante
     purseValue.textContent = purse;
-    console.log('Purse after play:', purse)
 
     //get dealers hand
     const handURL = `https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=3`
@@ -463,7 +465,7 @@ playButton.addEventListener('click', event => {
             if(dealersHandPlays(dealersHandValues)) {
                 if(playerWins(playersHandValues, dealersHandValues)) {
                     //winnings from beating dealer
-                    purse = purse +  2 * ante + 2 * play
+                    purse = purse + ante + 2 * play + payOutPlay(ante, playersHandValues)
                     dealersHandDescription.textContent = `Dealers hand qualifies. YOU WIN!`
                 } else {
                     dealersHandDescription.textContent = `Dealers hand qualifies. you lose...`
@@ -471,26 +473,16 @@ playButton.addEventListener('click', event => {
             } else {
                 if(playerWins(playersHandValues, dealersHandValues)) {
                     //winnings from beating dealer
-                    purse = purse + ante + 2 * play
+                    purse = purse + ante + play + payOutPlay(ante, playersHandValues)
                     dealersHandDescription.textContent = `Dealers hand doesnt qualify`
                 } else {
                     dealersHandDescription.textContent = `Dealers hand doesnt qualify. you lose...`
                 }
             }
-
-            console.log('Purse after paying play:', purse)
-            console.log(purse)
+        
             purseValue.textContent = purse;
         })
 })
-
-function appendPokerResult(playersHand, dealersHand, payout) {
-    if(playerWins(playersHand, dealersHand)) {
-        dealersHandDescription.textContent = `YOU WIN ${payout}!`
-    } else {
-        dealersHandDescription.textContent = 'YOU LOSE...'
-    }
-}
 
 function appendDealersCard(card) {
     let cardImg = document.createElement("img")
@@ -605,8 +597,6 @@ function playerWins(playersHand, dealersHand) {
         }
     } 
 }
-
-
 
 function payOutPlay(bet, hand) {
     const handType = handValue(hand)[0]
