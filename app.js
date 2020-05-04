@@ -50,7 +50,6 @@ const colorChoiceContainer = document.querySelector("#color-choice-container")
 const colorChoiceForm = document.querySelector("#color-choice-form")
 const userOptionsSection = document.querySelector("#user-options-section")
 const betsForm = document.querySelector('#bets-form')
-const betsMessage = document.querySelector('#bets-message')
 const purseValue = document.querySelector('#purse span')
 
 const loginURL = "https://three-card-poker-backend.herokuapp.com/api/v1/login"
@@ -75,23 +74,8 @@ userLogin.addEventListener("submit", event => {
     .then(parseJSON)
     .then(storeToken)
     .then(() => displayGame(user))
-    
-    if(localStorage.getItem("token") === null) {
-        login_message.textContent = 'Ah, not this time sport...try again'  
-    }
 
-    // foldButton.style.display = "none"
-    // playButton.style.display = "none"
-    // dealButton.style.display = "none"
-    // quitButton.style.display = "flex"
-
-    // betsForm.style.display = "flex"
-    // betsMessage.style.display = "inline"
-    // userOptionsSection.style.display = "flex"
-
-    // userLogin.style.display = "none"
-    // userSignUp.style.display = "none"
-    // logOutButton.style.display = "flex"
+    signup_message.textContent = ''
 })
 
 function parseJSON(response) {
@@ -106,7 +90,7 @@ function storeToken(response) {
 function displayGame(user) {
     if (localStorage.getItem("token") !== null) {
         signup_message.textContent = ''
-        header.textContent = `Let's get paid, ${user.username}!!!`
+        header.textContent = `LET'S GET PAID, ${user.username}!!!`
         navCard.style.width = '50'
 
         clearHands()
@@ -122,8 +106,7 @@ function displayGame(user) {
         //hide new user signup and login button
         userSignUp.style.display = "none"
         userLogin.style.display = "none"
-
-    } 
+    }
 }
 
 //open/close rules
@@ -167,6 +150,9 @@ logOutButton.addEventListener("click", event => {
     //display new user signup
     userSignUp.style.display = "block"
     userLogin.style.display = "block"
+
+    //reset header
+    header.textContent = 'Welcome to Three Card Poker'
 })
 
 //change the background
