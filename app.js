@@ -130,7 +130,7 @@ const handsContainer = document.querySelector("#hands-section")
 const playersHand = document.querySelector("#players-hand")
 const dealersHand = document.querySelector("#dealers-hand")
 
-const leaderboardSection = document.querySelector("#leaderboard-section")
+const leaderboardContainer = document.querySelector("#leaderboard-container")
 const resultsSection = document.querySelector('#results-section')
 
 logOutButton.addEventListener("click", event => {
@@ -153,7 +153,7 @@ logOutButton.addEventListener("click", event => {
     //reset header
     header.textContent = 'Welcome to Three Card Poker'
 
-    leaderboardSection.style.display = 'none'
+    leaderboardContainer.style.display = 'none'
     resultsSection.style.display = 'none'
 })
 
@@ -662,10 +662,10 @@ playAgainButton.addEventListener('click', event => {
 })
 
 //display leaderboard
+const leaderboardSection = document.querySelector("#leaderboard-section")
 const leaderboardButton = document.querySelector("#leaderboard-button")
 const closeLeaderboardButton = document.querySelector("#close-leaderboard-button")
 const leaderboardBody = document.querySelector("#leaderboard-body")
-
 
 leaderboardButton.addEventListener('click', event => {
     resultsSection.style.display = "none" 
