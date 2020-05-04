@@ -130,6 +130,9 @@ const handsContainer = document.querySelector("#hands-section")
 const playersHand = document.querySelector("#players-hand")
 const dealersHand = document.querySelector("#dealers-hand")
 
+const leaderboardSection = document.querySelector("#leaderboard-section")
+const resultsSection = document.querySelector('#results-section')
+
 logOutButton.addEventListener("click", event => {
     localStorage.removeItem("token")
     signup_message.textContent = ''
@@ -149,6 +152,9 @@ logOutButton.addEventListener("click", event => {
 
     //reset header
     header.textContent = 'Welcome to Three Card Poker'
+
+    leaderboardSection.style.display = 'none'
+    resultsSection.style.display = 'none'
 })
 
 //change the background
@@ -612,7 +618,6 @@ function payOutPlay(bet, hand) {
     }
 }
 
-const resultsSection = document.querySelector('#results-section')
 const resultsDescription = document.querySelector('#results-description')
 const scoresURL = "https://three-card-poker-backend.herokuapp.com/api/v1/scores"
 
@@ -660,7 +665,7 @@ playAgainButton.addEventListener('click', event => {
 const leaderboardButton = document.querySelector("#leaderboard-button")
 const closeLeaderboardButton = document.querySelector("#close-leaderboard-button")
 const leaderboardBody = document.querySelector("#leaderboard-body")
-const leaderboardSection = document.querySelector("#leaderboard-section")
+
 
 leaderboardButton.addEventListener('click', event => {
     resultsSection.style.display = "none" 
