@@ -1,7 +1,7 @@
 const signup_message = document.querySelector("#signup-message")
 const login_message = document.querySelector("#login-message")
 const userSignUp = document.querySelector("#new-user-signup")
-const usersURL = "https://three-card-poker-backend.herokuapp.com/users"
+const usersURL = "https://three-card-poker-backend.herokuapp.com/api/v1/users"
 let purse
 
 //clear local storage
@@ -13,8 +13,10 @@ userSignUp.addEventListener("submit", event => {
 
     const formData = new FormData(event.target)
     const user = {
-        username: formData.get("username"),
-        password: formData.get("password")
+        user: {
+            username: formData.get("username"),
+            password: formData.get("password")
+        }
     }
     
     fetch(usersURL, {
@@ -24,18 +26,25 @@ userSignUp.addEventListener("submit", event => {
         },
         body: JSON.stringify(user)
     })
-    .then(displaySignupMessage)
+    .then(parseJSON)
+    .then(displaySignUpMessage)
 })
 
-function displaySignupMessage(response) {
-    signup_message.textContent = "Boy, you gonna make that paper!"
-    login_message.textContent = ""
+function displaySignUpMessage(response) {
+    if(response.error === undefined) {
+        signup_message.textContent = "Ya, Signed Up!"
+    } else {
+        signup_message.textContent = "User Already Exists"
+    }
 }
+
 
 //User Login
 const userLogin = document.querySelector("#user-login")
 const userLoginButton = document.querySelector("#user-login-submit")
 const logOutButton = document.querySelector("#user-logout")
+const header = document.querySelector("#header")
+const navCard = document.querySelector("#nav-card")
 
 const colorChoiceContainer = document.querySelector("#color-choice-container")
 const colorChoiceForm = document.querySelector("#color-choice-form")
@@ -43,6 +52,8 @@ const userOptionsSection = document.querySelector("#user-options-section")
 const betsForm = document.querySelector('#bets-form')
 const betsMessage = document.querySelector('#bets-message')
 const purseValue = document.querySelector('#purse span')
+
+const loginURL = "https://three-card-poker-backend.herokuapp.com/api/v1/login"
 
 userLogin.addEventListener("submit", event => {
     event.preventDefault()
@@ -54,7 +65,7 @@ userLogin.addEventListener("submit", event => {
         password: formData.get("password")
     }
     
-    fetch("https://three-card-poker-backend.herokuapp.com/login", {
+    fetch(loginURL, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -63,22 +74,24 @@ userLogin.addEventListener("submit", event => {
     })
     .then(parseJSON)
     .then(storeToken)
-    .then(() => displayLoginMessage(user))
+    .then(() => displayGame(user))
     
-    clearHands()
-    purse = 3000
-    purseValue.textContent = purse
+    if(localStorage.getItem("token") === null) {
+        login_message.textContent = 'Ah, not this time sport...try again'  
+    }
 
-    colorChoiceContainer.style.display = "flex"
+    // foldButton.style.display = "none"
+    // playButton.style.display = "none"
+    // dealButton.style.display = "none"
+    // quitButton.style.display = "flex"
 
-    foldButton.style.display = "none"
-    playButton.style.display = "none"
-    dealButton.style.display = "none"
-    quitButton.style.display = "flex"
+    // betsForm.style.display = "flex"
+    // betsMessage.style.display = "inline"
+    // userOptionsSection.style.display = "flex"
 
-    betsForm.style.display = "flex"
-    betsMessage.style.display = "inline"
-    userOptionsSection.style.display = "flex"
+    // userLogin.style.display = "none"
+    // userSignUp.style.display = "none"
+    // logOutButton.style.display = "flex"
 })
 
 function parseJSON(response) {
@@ -90,23 +103,26 @@ function storeToken(response) {
     localStorage.setItem("user_id", response.user_id)
 }
 
-
-function displayLoginMessage(user) {
-    if (localStorage.getItem("token")) {
+function displayGame(user) {
+    if (localStorage.getItem("token") !== null) {
         signup_message.textContent = ''
-        login_message.textContent = `Lets get it, ${user.username}!`
+        header.textContent = `Let's get paid, ${user.username}!!!`
+        navCard.style.width = '50'
+
+        clearHands()
+        purse = 3000
+        purseValue.textContent = purse
+
+        colorChoiceContainer.style.display = "flex"
 
         //display logout button and deal cards button
         logOutButton.style.display = "block"
-        colorChoiceForm.style.display = "flex"
         userOptionsSection.style.display = "flex"
 
         //hide new user signup and login button
         userSignUp.style.display = "none"
         userLogin.style.display = "none"
 
-    } else {
-        login_message.textContent = 'Ah, not this time sport...try again'  
     } 
 }
 
@@ -141,14 +157,12 @@ logOutButton.addEventListener("click", event => {
     login_message.textContent = ''
 
     //hide play button, background selector, hide logout button, and cards after logout
-    colorChoiceForm.style.display = "none" 
+    colorChoiceContainer.style.display = "none" 
+
     logOutButton.style.display = "none"
     handsContainer.style.display = "none"
     userOptionsSection.style.display = "none"
     resultsSection.style.display = "none"
-
-    rulesSection.style.display = "none"
-    rulesButton.style.display = "none"
     
     //display new user signup
     userSignUp.style.display = "block"
@@ -256,7 +270,7 @@ dealButton.addEventListener("click", event => {
                     appendPlayersHandDescription(playersHandValues)   
                 })
                 .then(() => {
-                    // purse = purse + pairPlusPayout(pairPlus, playersHandValues)
+                    purse = purse + pairPlusPayout(pairPlus, playersHandValues)
                     purseValue.textContent = purse;
                 })
         })
@@ -475,7 +489,7 @@ playButton.addEventListener('click', event => {
             if(dealersHandPlays(dealersHandValues)) {
                 if(playerWins(playersHandValues, dealersHandValues)) {
                     //winnings from beating dealer
-                    // purse = purse +  2 * ante + 2 * play
+                    purse = purse +  2 * ante + 2 * play
                     dealersHandDescription.textContent = `Dealers hand qualifies. YOU WIN!`
                 } else {
                     dealersHandDescription.textContent = `Dealers hand qualifies. you lose...`
@@ -483,7 +497,7 @@ playButton.addEventListener('click', event => {
             } else {
                 if(playerWins(playersHandValues, dealersHandValues)) {
                     //winnings from beating dealer
-                    // purse = purse + ante + 2 * play
+                    purse = purse + ante + 2 * play
                     dealersHandDescription.textContent = `Dealers hand doesnt qualify`
                 } else {
                     dealersHandDescription.textContent = `Dealers hand doesnt qualify. you lose...`
@@ -492,7 +506,7 @@ playButton.addEventListener('click', event => {
 
             console.log('Purse after paying play:', purse)
             console.log(purse)
-            //purseValue.textContent = purse;
+            purseValue.textContent = purse;
         })
 })
 
@@ -650,11 +664,13 @@ quitButton.addEventListener('click', event => {
     resultsDescription.textContent = finalPurseMessage
 
     const result = {
-        user_id: localStorage.getItem("user_id"),
-        score: purse
+        score: {
+            user_id: localStorage.getItem("user_id"),
+            score: purse
+        }
     }
 
-    fetch("https://three-card-poker-backend.herokuapp.com/scores", {
+    fetch("https://three-card-poker-backend.herokuapp.com/api/v1/scores", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -662,32 +678,7 @@ quitButton.addEventListener('click', event => {
         },
         body: JSON.stringify(result)
     })
-
-    fetch("https://three-card-poker-backend.herokuapp.com/scores", {
-        headers: {
-            "Authorization": `bearer ${localStorage.getItem("token")}`
-        }
-    })
-    .then(parseJSON)
-    .then(scores => {let topScores = topTenScores(scores)})
-    .then(() => {topScores.map(score => appendScore(score))})
 })
-
-function topTenScores(scores) {
-    sortedScores = scores.sort((a, b) => (a.score > b.score) ? 1 : -1)
-    topScores = scores.slice(0, 10)
-    return topScores
-}
-
-function appendScore(score) {
-    fetch(`https://three-card-poker-backend.herokuapp.com/users/${score.user_id}`)
-        .then(parseJSON)
-        .then(user => {
-            let row = document.createElement('tr')
-            row.innerHTML = `<td>${user.username}</td><td>${score.score}</td>`
-            leaderboardBody.appendChild(row)
-        })
-}
 
 const playAgainButton = document.querySelector('#play-again-button')
 
@@ -703,10 +694,43 @@ const leaderboardSection = document.querySelector("#leaderboard-section")
 
 leaderboardButton.addEventListener('click', event => {
     resultsSection.style.display = "none" 
-    leaderboardSection.style.display = "flex" 
+    leaderboardSection.style.display = "flex"
+
+    clearLeaderboard(leaderboardBody);
+    
+    fetch("https://three-card-poker-backend.herokuapp.com/api/v1/scores", {
+        headers: {
+            "Authorization": `bearer ${localStorage.getItem("token")}`
+        }
+    })
+    .then(parseJSON)
+    .then(response => displayScores(response))
 })
 
 closeLeaderboardButton.addEventListener('click', event => {
     resultsSection.style.display = "flex" 
     leaderboardSection.style.display = "none" 
 })
+
+function clearLeaderboard(leaderboard) {
+    while(leaderboard.firstChild) {
+        leaderboard.removeChild(leaderboard.firstChild);
+    }
+}
+
+function displayScores(response) {
+    let topScores =topTenScores(response)
+    topScores.map(score => appendScore(score))
+}
+
+function topTenScores(scores) {
+    let sortedScores = scores.sort((a, b) => (b.score - a.score))
+    let topScores = scores.slice(0, 10)
+    return topScores
+}
+
+function appendScore(score) {
+    let row = document.createElement('tr')
+    row.innerHTML = `<td>${user.username}</td><td>${score.score}</td>`
+    leaderboardBody.appendChild(row)
+}

@@ -21,7 +21,7 @@ header {
     justify-content: space-evenly;
     font-size: large;
     height: 10rem;
-    width: 90%;
+    width: 80%;
     border-style: solid;
     border-color: black;
     border-radius: 20%;
@@ -42,10 +42,6 @@ header {
     text-align: center;
     background-color: lawngreen;
     font-family: 'Permanent Marker', cursive;
-}
-
-#login-message{
-    font-size: 48px;
 }
 
 #nav-bar{
@@ -77,7 +73,6 @@ header {
 
 #user-logout{
     display: none;
-    background-color: white;
 }
 
 .form-title{
