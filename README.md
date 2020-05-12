@@ -11,7 +11,7 @@ How to run the game locally:
 2. Run "bundle install" to install the appropriate gems.
 3. Run the rails server using the command "rails s" and run the front end using lite-server or equivalent
 
-Three card poker is hosted on Google Firebase here => https://three-card-poker-c156c.firebaseapp.com/
+Three card poker is hosted on Google Firebase here => https://three-card-poker-5d872.firebaseapp.com/
 
 Author:
 
