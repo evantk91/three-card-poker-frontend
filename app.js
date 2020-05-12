@@ -148,6 +148,7 @@ logOutButton.addEventListener("click", event => {
 
     //reset rules button
     rulesButton.style.display = "flex"
+    closeRulesButton.style.display = "none"
     
     //display new user signup
     userSignUp.style.display = "block"
