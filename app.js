@@ -145,6 +145,9 @@ logOutButton.addEventListener("click", event => {
     handsContainer.style.display = "none"
     userOptionsSection.style.display = "none"
     resultsSection.style.display = "none"
+
+    //reset rules button
+    rulesButton.style.display = "flex"
     
     //display new user signup
     userSignUp.style.display = "block"
@@ -155,6 +158,7 @@ logOutButton.addEventListener("click", event => {
 
     leaderboardSection.style.display = 'none'
     resultsSection.style.display = 'none'
+    rulesSection.style.display = 'none'
 })
 
 //change the background
